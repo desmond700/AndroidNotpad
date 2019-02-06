@@ -169,9 +169,6 @@ public class NewNoteActivity extends AppCompatActivity {
         values.put(DatabaseQueries.COLUMN_TITLE, title);
         values.put(DatabaseQueries.COLUMN_NOTE, note);
 
-        Log.d("title", title);
-        Log.d("note", note);
-
        // Toast.makeText(this, "Date is in the wrong format", Toast.LENGTH_LONG).show();
 
         try {

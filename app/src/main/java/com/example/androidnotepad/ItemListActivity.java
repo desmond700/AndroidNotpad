@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +22,7 @@ import android.widget.Toast;
 import com.example.androidnotepad.util.DatabaseHelper;
 import com.example.androidnotepad.util.DatabaseQueries;
 import com.example.androidnotepad.util.Note;
+import com.github.clans.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +54,7 @@ public class ItemListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,8 +91,6 @@ public class ItemListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Note item = (Note) view.getTag();
                 if (mTwoPane) {
-                    Log.d("noteTitle",mValues.get(item._ID).title);
-                    Log.d("noteContent",mValues.get(item._ID).note);
                     Bundle arguments = new Bundle();
                     arguments.putString(ItemDetailFragment.ARG_ITEM_ID, Integer.toString(item._ID));
                     ItemDetailFragment fragment = new ItemDetailFragment();
@@ -109,18 +107,6 @@ public class ItemListActivity extends AppCompatActivity {
                 }
             }
         };
-        private final ImageButton clearBtn = (ImageButton) findViewById(R.id.clear_note);
-        private final View.OnClickListener mClearBtnOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Note mItem = (Note)v.getTag();
-                SQLiteDatabase database = new DatabaseHelper(getContext()).getReadableDatabase();
-                int value = database.delete(DatabaseQueries.CREATE_TABLE,DatabaseQueries._ID+"="+mItem._ID, null);
-
-                open(v, value);
-
-            }
-        };
 
         SimpleItemRecyclerViewAdapter(ItemListActivity parent,
                                       List<Note> items,
@@ -128,8 +114,15 @@ public class ItemListActivity extends AppCompatActivity {
             mValues = items;
             mParentActivity = parent;
             mTwoPane = twoPane;
-            for(int i = 0; i < items.size(); i++){
-                Log.d("recycler items", Integer.toString(items.get(i)._ID));
+            TextView tvEmpty = findViewById(R.id.empty_view);
+            RecyclerView rc = findViewById(R.id.item_list);
+            Log.d("size", Integer.toString(items.size()));
+            if(items.size() == 0){
+                tvEmpty.setVisibility(View.VISIBLE);
+                rc.setVisibility(View.GONE);
+            }else{
+                tvEmpty.setVisibility(View.GONE);
+                rc.setVisibility(View.VISIBLE);
             }
         }
 
@@ -147,7 +140,7 @@ public class ItemListActivity extends AppCompatActivity {
 
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
-            holder.itemView.setOnClickListener(mClearBtnOnClickListener);
+            //holder.itemView.setOnClickListener(mClearBtnOnClickListener);
         }
 
         @Override
@@ -165,33 +158,6 @@ public class ItemListActivity extends AppCompatActivity {
                 mContentView = view.findViewById(R.id.note_date);
             }
         }
-    }
-
-    public void open(View view, final int value){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Are you sure, You wanted to make decision");
-                alertDialogBuilder.setPositiveButton("yes",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                Toast.makeText(getContext(),"You clicked yes button",Toast.LENGTH_LONG).show();
-                                if(value > 0){
-                                    Intent intent = getIntent();
-                                    finish();
-                                    startActivity(intent);
-                                }
-                            }
-                        });
-
-        alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
     }
 
     public static List<Note> readNotes(Context context){

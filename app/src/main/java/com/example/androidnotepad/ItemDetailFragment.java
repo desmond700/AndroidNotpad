@@ -1,7 +1,6 @@
 package com.example.androidnotepad;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -12,15 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.example.androidnotepad.dummy.DummyContent;
 import com.example.androidnotepad.util.DatabaseHelper;
 import com.example.androidnotepad.util.DatabaseQueries;
-import com.example.androidnotepad.util.Note;
-import com.example.androidnotepad.util.NoteContent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -58,7 +50,6 @@ public class ItemDetailFragment extends Fragment {
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
 
-
             readNotes(Integer.parseInt(getArguments().getString(ARG_ITEM_ID)));
 
             Activity activity = this.getActivity();
@@ -66,6 +57,8 @@ public class ItemDetailFragment extends Fragment {
             if (appBarLayout != null) {
                 appBarLayout.setTitle(mTitle);
             }
+
+
         }
     }
 

@@ -1,15 +1,25 @@
 package com.example.androidnotepad;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+
+import com.example.androidnotepad.util.DatabaseHelper;
+import com.example.androidnotepad.util.DatabaseQueries;
+import com.github.clans.fab.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import static com.example.androidnotepad.util.GlobalApplication.getContext;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -26,14 +36,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        FloatingActionButton fab = findViewById(R.id.fab_clear);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -62,6 +65,13 @@ public class ItemDetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.item_detail_container, fragment)
                     .commit();
+
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clearItem(Integer.parseInt(getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID)));
+                }
+            });
         }
     }
 
@@ -81,4 +91,32 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void clearItem(final int value){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Are you sure, You want to make this decision?");
+        alertDialogBuilder.setPositiveButton("yes",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Log.d("value", Integer.toString(value));
+                        SQLiteDatabase database = new DatabaseHelper(getApplicationContext()).getReadableDatabase();
+                        database.delete(DatabaseQueries.TABLE_NAME,DatabaseQueries._ID+"="+value, null);
+                        Intent intent = new Intent(getApplicationContext(), ItemListActivity.class);
+                        finish();
+                        startActivity(intent);
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
 }
