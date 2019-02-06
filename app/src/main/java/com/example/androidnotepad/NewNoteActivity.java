@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.androidnotepad.util.DatabaseHelper;
 import com.example.androidnotepad.util.DatabaseQueries;
+import com.example.androidnotepad.util.Datetime;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,12 +40,14 @@ public class NewNoteActivity extends AppCompatActivity {
     EditText txtNoteTitle;
     String noteTitle = "";
     String noteContent = "";
+    Datetime datetime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_note);
 
+        datetime = new Datetime(getCurrentTimeStamp());
         //
         toolbar = findViewById(R.id.edit_toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24px);
@@ -58,7 +61,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
         //
         txtNoteDatetime = findViewById(R.id.new_note_datetime);
-        txtNoteDatetime.setText(getCurrentTimeStamp());
+        txtNoteDatetime.setText(datetime.getDate() +", "+ datetime.getTime());
 
         //
         txtNoteTitle = findViewById(R.id.title);

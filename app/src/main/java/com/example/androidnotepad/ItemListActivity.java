@@ -1,13 +1,11 @@
 package com.example.androidnotepad;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,19 +13,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.androidnotepad.util.DatabaseHelper;
 import com.example.androidnotepad.util.DatabaseQueries;
+import com.example.androidnotepad.util.Datetime;
 import com.example.androidnotepad.util.Note;
 import com.github.clans.fab.FloatingActionButton;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-import static com.example.androidnotepad.util.GlobalApplication.getContext;
 
 /**
  * An activity representing a list of Items. This activity
@@ -163,6 +162,7 @@ public class ItemListActivity extends AppCompatActivity {
     public static List<Note> readNotes(Context context){
         SQLiteDatabase database = new DatabaseHelper(context).getReadableDatabase();
         List<Note> list = new ArrayList<Note>();
+        Datetime datetime;
         String[] projection = {
                 DatabaseQueries._ID,
                 DatabaseQueries.COLUMN_TITLE,
@@ -194,8 +194,9 @@ public class ItemListActivity extends AppCompatActivity {
 
             index = cursor.getColumnIndexOrThrow(projection[3]);
             String date = cursor.getString(index);
-
-            list.add(new Note(id,title,note,date));
+            //String date = dateFormat(cursor.getString(index));
+            datetime = new Datetime(date);
+            list.add(new Note(id,title,note,datetime.getDate()));
         }
 
         return list;

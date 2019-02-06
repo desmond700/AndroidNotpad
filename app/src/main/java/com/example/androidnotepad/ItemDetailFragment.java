@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.androidnotepad.util.DatabaseHelper;
 import com.example.androidnotepad.util.DatabaseQueries;
+import com.example.androidnotepad.util.Datetime;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -70,6 +71,7 @@ public class ItemDetailFragment extends Fragment {
         // Show the dummy content as text in a TextView.
         if (mNote != null) {
             ((TextView) rootView.findViewById(R.id.item_detail)).setText(mNote);
+            ((TextView) rootView.findViewById(R.id.item_detail_date)).setText(mDate);
         }
 
         return rootView;
@@ -77,6 +79,7 @@ public class ItemDetailFragment extends Fragment {
 
     public void readNotes(int id){
         SQLiteDatabase database = new DatabaseHelper(getContext()).getReadableDatabase();
+        Datetime datetime;
         String[] projection = {
                 DatabaseQueries._ID,
                 DatabaseQueries.COLUMN_TITLE,
@@ -107,7 +110,8 @@ public class ItemDetailFragment extends Fragment {
                 mNote = cursor.getString(index);
 
                 index = cursor.getColumnIndexOrThrow(projection[3]);
-                mDate = cursor.getString(index);
+                datetime = new Datetime(cursor.getString(index));
+                mDate = datetime.getDate() + ", " + datetime.getTime();
             }
         }
     }
