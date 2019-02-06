@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 import com.example.androidnotepad.util.DatabaseHelper;
 import com.example.androidnotepad.util.DatabaseQueries;
 import com.example.androidnotepad.util.Note;
-import com.example.androidnotepad.util.NoteContent;
 
 import java.util.ArrayList;
 import java.util.List;
